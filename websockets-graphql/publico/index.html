@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script src="socket.io.js"></script>
+    
+
+
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hola</h1>
+
+    <script>    
+
+
+            const server = io('http://192.168.100.9:3002');
+
+            let nombre = '';
+
+
+
+
+
+            server.emit('events',{data:'1'})
+            server.emit('eventos',{data:'2'})
+
+
+
+
+
+
+            server.on('events', (e)=>{
+                    console.log('user events',e);
+                });
+
+            server.on('eventos', (e)=>{
+                console.log('eventos',e);
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+            server.on('connected', (conexion)=>{
+                console.log('a user connected');
+                server.emit('events',(a)=>{console.log('evento enviado',a)});
+            });
+
+            server.on('chat', (data)=>{
+                imprimirChat(data);
+            });
+
+            function loginChat(nombreDeChat){
+                nombre = nombreDeChat;
+            }
+
+            function chat(mensaje){
+                server.emit('chat',{
+                    nombre:nombre,
+                    mensaje:mensaje
+                },
+                (data)=>{
+                    imprimirChat(data)
+                }
+                );
+
+            }
+
+            function imprimirChat(data){
+                const fecha = new Date();
+                console.log(`${fecha.toLocaleString() + fecha.getMilliseconds()} : ${data.nombre}: ${data.mensaje}`);
+            }
+
+
+            console.log('Chao')
+        </script>
+</body>
+</html>
