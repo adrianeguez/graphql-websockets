@@ -13,7 +13,7 @@ const io = require('socket.io-client');
 
 
 
-@WebSocketGateway(3002)
+@WebSocketGateway(3002, { namespace:'/uno'})
 export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 
@@ -81,6 +81,13 @@ export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 	@SubscribeMessage('chat')
 	chat(client, data): Observable<WsResponse<number>> {
 		client.broadcast.emit('chat',data) // los sockets que escuchan 'events'
+		return data;
+		// la peticion
+	}
+
+	@SubscribeMessage('holados')
+	holaDos(client, data): Observable<WsResponse<number>> {
+		client.broadcast.emit('holados',data) // los sockets que escuchan 'events'
 		return data;
 		// la peticion
 	}
