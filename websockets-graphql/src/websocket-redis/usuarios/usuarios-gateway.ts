@@ -19,6 +19,15 @@ export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
 	afterInit(server: any) {
 		console.log('Init Usuarios');
+		console.log('Entrando a 3002/uno')
+		setTimeout(
+			()=>{
+				this.socket = io('http://localhost:3002/uno')
+				console.log('3002/uno ya')
+			}, 5000
+		)
+		
+		
 	}
 	handleConnection(client: any, ...args: any[]) {
 		console.log('Usuario: conexion de cliente', client.id, args);
@@ -42,7 +51,7 @@ export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
 	@WebSocketServer() server;
 
-	socket = io('http://localhost:3002');
+	socket;
 
 
 
@@ -87,11 +96,20 @@ export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
 	@SubscribeMessage('holados')
 	holaDos(client, data): Observable<WsResponse<number>> {
+		console.log('Entro a holados');
 		client.broadcast.emit('holados',data) // los sockets que escuchan 'events'
 		return data;
 		// la peticion
 	}
 	
+
+	@SubscribeMessage('noticias')
+	noticias(client, data): Observable<WsResponse<number>> {
+		console.log('Entro a holados');
+		client.broadcast.emit('noticias',data) // los sockets que escuchan 'events'
+		return data;
+		// la peticion
+	}
 
 
 

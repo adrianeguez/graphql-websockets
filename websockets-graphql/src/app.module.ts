@@ -17,7 +17,7 @@ export class AppModule {
   iniciarBase(){
     console.log('Crear datos')
     setTimeout(()=>{
-      this._usuariosGateway.socket.emit('chat',{nombre:'Servidor',mensaje:'Quemalos vivos'})
+      // this._usuariosGateway.socket.emit('chat',{nombre:'Servidor',mensaje:'Quemalos vivos'})
     }, 5000);
   }
 }
