@@ -23,24 +23,44 @@
 
         socketUniversidades.on('connect', () => {
             console.log('Conectado a socket Universidades');
+
+            socketUniversidades.emit('solicitarCupoUniversidad', { cupo: 'Aplicaciones Web' },
+                (cupoSolicitado) => {
+                    console.log('Cupo solicitado', cupoSolicitado);
+                }
+            );
+
         });
 
         socketUsuarios.on('connect', () => {
             console.log('Conectado a socket Usuarios');
-            socketUsuarios.emit('solicitarSaludoATodos', { mensaje: 'Hola a todos' },
-                (saludo) => {
-                    console.log('Saludo usuarios', saludo);
-                }
-            );
         });
 
         socketUsuarios.on('saludoATodos', (saludo) => {
             console.log('Saludo usuarios', saludo);
         });
 
+        socketUniversidades.on('cupoUniversidad', (saludo) => {
+            console.log('Cupo Universidad', saludo);
+        });
+
+        function login(nombre) {
+            socketUsuarios.emit('solicitarLogin', { nombre: nombre },
+                () => {
+                    console.log('Bienvenido ', nombre);
+                }
+            )
+        }
 
 
+        socketUsuarios.on('usuarioInicioSesion', (datos) => {
+            console.log(`Usuario ${datos.nombre} inicio sesion`);
+        });
 
+
+        socketUsuarios.on('usuarioCambioNombre', (datos) => {
+            console.log(`Usuario ${datos.nombre} cambio de nombre.`);
+        });
 
 
 

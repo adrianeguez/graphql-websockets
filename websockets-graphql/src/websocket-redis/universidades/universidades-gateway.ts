@@ -11,11 +11,11 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 const io = require('socket.io-client');
 
-@WebSocketGateway(3002, { namespace:'/'})
+@WebSocketGateway(3002, { namespace: '/universidades' })
 export class UniversidadesGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	afterInit(server: any) {
 		console.log('Init Universidades');
-		
+
 	}
 	handleConnection(client: any, ...args: any[]) {
 		console.log('Universwidad: conexion de cliente', client.id, args);
@@ -23,35 +23,34 @@ export class UniversidadesGateway implements OnGatewayInit, OnGatewayConnection,
 	handleDisconnect(client: any) {
 		console.log('disconnect', client.id);
 	}
+
+	@SubscribeMessage('solicitarCupoUniversidad')
+	solicitarCupoUniversidad(socketCliente, datos) {
+
+		const respuesta = `El usuario ${socketCliente.id} solicito unirse a ${datos.cupo}`
+		socketCliente.broadcast.emit('cupoUniversidad', respuesta) // los sockets que escuchan 'events'
+		return respuesta;
+	}
+
+
+	/*
 	@WebSocketServer() server;
 
-	socket = io('http://localhost:3002/');
+	socket = io('http://localhost:3002/universidades');
 
-	@SubscribeMessage('eventos')
+	@SubscribeMessage('solicitarUnirseASala')
 	findAll(client, data): Observable<WsResponse<number>> {
-		client.broadcast.emit('eventos',data) // los sockets que escuchan 'events'
+		// client.broadcast.emit('eventos',data) // los sockets que escuchan 'events'
 
 		return from([ 4,5,6]).pipe(map((item) => ({ event: 'events', data: item })));
 	}
 
-	@SubscribeMessage('identity')
-	async identity(client, data: number): Promise<number> {
-		return data;
-	}
+	@SubscribeMessage('solicitarPostearComentario')
+	findAll(client, data): Observable<WsResponse<number>> {
+		// client.broadcast.emit('eventos',data) // los sockets que escuchan 'events'
 
-	@SubscribeMessage('holauno')
-	holaUno(client, data): Observable<WsResponse<number>> {
-		console.log('Entro a holauno');
-		client.broadcast.emit('holauno',data) // los sockets que escuchan 'events'
-		return data;
-		// la peticion
+		return from([ 4,5,6]).pipe(map((item) => ({ event: 'events', data: item })));
 	}
+		*/
 
-	@SubscribeMessage('politica')
-	noticias(client, data): Observable<WsResponse<number>> {
-		console.log('Entro a holados');
-		client.broadcast.emit('politica',data) // los sockets que escuchan 'events'
-		return data;
-		// la peticion
-	}
 }
