@@ -62,6 +62,62 @@
             console.log(`Usuario ${datos.nombre} cambio de nombre.`);
         });
 
+        socketUsuarios.on('entroAlRoom', (mensajeServidor) => {
+            console.log(`El usuario ${mensajeServidor.idSocket} entro al room ${mensajeServidor.room}`);
+        });
+
+
+        function solicitarUnirseRoom(room) {
+            socketUsuarios.emit('solicitarUnirseRoom', { room: room },
+                (mensajeServidor) => {
+                    console.log(mensajeServidor.mensaje);
+                }
+            )
+        }
+
+
+        socketUsuarios.on('mensajeEnRoom', (mensajeServidor) => {
+            console.log(`Room: ${mensajeServidor.room}: `, mensajeServidor.mensaje);
+        });
+
+        function solicitarMensajeEnRoom(datos) {
+            socketUsuarios.emit('solicitarMensajeEnRoom', { room: datos.room, mensaje: datos.mensaje },
+                (mensajeServidor) => {
+                    console.log(`Room: ${mensajeServidor.room}: `, mensajeServidor.mensaje);
+                }
+            )
+        }
+
+        socketUsuarios.on('listaRooms', (mensajeServidor) => {
+            console.log(mensajeServidor);
+        });
+
+        function solicitarListaRooms() {
+            socketUsuarios.emit('solicitarListaRooms',
+                (mensajeServidor) => {
+                    console.log(mensajeServidor);
+                }
+            )
+        }
+
+
+
+        socketUsuarios.on('salioDelRoom', (mensajeServidor) => {
+            console.log(`El usuario ${mensajeServidor.idSocket} salio del room ${mensajeServidor.room}`);
+        });
+
+        function solicitarSalirDeRoom(room) {
+            socketUsuarios.emit('solicitarSalirDeRoom', { room: room },
+                (mensajeServidor) => {
+                    console.log(mensajeServidor.mensaje);
+                }
+            )
+        }
+
+
+
+
+
 
 
 

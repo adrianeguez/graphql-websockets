@@ -17,6 +17,7 @@ const io = require('socket.io-client');
 export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 	usuarios: UsuarioSocketInterface[] = [];
+	listaRooms = [];
 
 	afterInit(server: any) {
 		console.log('Init Usuarios');
@@ -51,6 +52,58 @@ export class UsuariosGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 			socketCliente.broadcast.emit('usuarioInicioSesion', datos);
 			return datos;
 		}
+	}
+
+
+
+
+
+
+	@SubscribeMessage('solicitarUnirseRoom')
+	solicitarUnirseRoom(socketCliente, datos) {
+
+		this.listaRooms.push(datos.room); // anadir a lista de rooms
+
+		socketCliente.join(datos.room); // string
+
+		socketCliente.broadcast.emit('entroAlRoom', { room: datos.room, idSocket: socketCliente.id });
+
+		return { mensaje: `Te haz unido al cuarto ${datos.room}` };
+	}
+
+	@SubscribeMessage('solicitarSalirDeRoom')
+	solicitarSalirDeRoom(socketCliente, datos) {
+
+		socketCliente.leave(datos.room); // string
+
+		socketCliente.broadcast.emit('salioDelRoom', { room: datos.room, idSocket: socketCliente.id });
+
+		return { mensaje: `Haz salido del cuarto ${datos.room}` };
+	}
+
+
+
+
+
+
+	@SubscribeMessage('solicitarMensajeEnRoom')
+	solicitarMensajeEnRoom(socketCliente, datos) {
+
+		socketCliente.to(datos.room).emit('mensajeEnRoom', { mensaje: datos.mensaje, room: datos.room });
+
+		return { mensaje: datos.mensaje, room: datos.room };
+
+
+	}
+
+
+
+
+
+	@SubscribeMessage('solicitarListaRooms')
+	solicitarListaRooms(socketCliente, datos) {
+		socketCliente.broadcast.emit('listaRooms', { listaRooms: this.listaRooms });
+		return { listaRooms: this.listaRooms };
 	}
 
 
